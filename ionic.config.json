@@ -1,0 +1,7 @@
+{
+  "name": "addressBook",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
