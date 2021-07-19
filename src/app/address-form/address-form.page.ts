@@ -2,54 +2,68 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, NavParams } from '@ionic/angular';
 
-interface Address {
-  id?: number;
-  name: string;
-  data: string;
-  classe: string;
-  activityNiche: string;
-  propertyType: string;
-  description: string;
-  followUpStart: string;
-  followUpEnd: string;
-}
-
+import { Observable } from 'rxjs';
+import { DatabaseService } from '../services/database/database.service';
+import { Address } from '../interfaces/Address';
 @Component({
   selector: 'app-address-form',
   templateUrl: './address-form.page.html',
   styleUrls: ['./address-form.page.scss'],
 })
-
 export class AddressFormPage implements OnInit {
 
   title = 'Cadastrar Endereço';
+  loaded = false;
+
   address: Address = {
     id: null,
     name: '',
-    data: '',
+    data: new Date('01-01-2000').toISOString(),
     classe: '',
     activityNiche: '',
-    propertyType: '1',
+    propertyType: '',
     description: '',
-    followUpStart: '',
-    followUpEnd: ''
+    followUpStart: new Date('01-01-2000').toISOString(),
+    followUpEnd: new Date('02-01-2000').toISOString(),
   };
 
   errors: string;
+  properties: Observable<any[]>;
 
   constructor(public router: Router,
     private route: ActivatedRoute, 
     public alertController: AlertController,
-    ) {}
+    private db: DatabaseService
+    ) {
+      this.db.getDatabaseState().subscribe(rdy => {
+        // this.presentAlert('Conexão...' + this.db.ok_db + ' - erro: ' + this.db.error);
+        if (rdy) {
+          this.properties = this.db.getProps();
+
+          // Check if there is a id
+          this.route.paramMap.subscribe(params => {
+            const id = params.get('id');
+            if(id) {
+              this.title = 'Editar endereço';
+              this.address.id = Number(id);
+
+              this.db.getAddress(this.address.id).then(data => {
+                this.address = data;
+              });
+
+            }
+          });
+
+          this.loaded = true;
+
+        } else {
+          // this.presentAlert('O banco de dados não foi carregado...' + rdy);
+        }
+
+      });
+    }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      let id = params.get('id');
-      if(id) {
-        this.title = "Editar endereço";
-        this.address.id = Number(id);
-      }    
-   });
   }
 
   goHome() {
@@ -64,9 +78,23 @@ export class AddressFormPage implements OnInit {
 
     if(this.errors) {
       // show alert
-      this.presentAlert();
+      this.presentAlert(this.errors);
     } else {
       // add address in database
+
+      const data = [];
+      data[0] = this.address.name;
+      data[1] = this.address.data;
+      data[2] = this.address.activityNiche;
+      data[3] = this.address.classe;
+      data[4] = this.address.propertyType;
+      data[5] = this.address.description;
+      data[6] = this.address.followUpStart;
+      data[7] = this.address.followUpEnd;
+
+      this.db.addAddress(data);
+
+      this.alertSuccess();
     }
   }
 
@@ -78,43 +106,80 @@ export class AddressFormPage implements OnInit {
 
     if(this.errors) {
       // show alert
-      this.presentAlert();
+      this.presentAlert(this.errors);
     } else {
       // update address in database
+
+      const data = [];
+      data[0] = this.address.name;
+      data[1] = this.address.data;
+      data[2] = this.address.activityNiche;
+      data[3] = this.address.classe;
+      data[4] = this.address.propertyType;
+      data[5] = this.address.description;
+      data[6] = this.address.followUpStart;
+      data[7] = this.address.followUpEnd;
+
+      this.db.updateAddress(data,this.address.id);
+
+      this.alertSuccess();
     }
   }
 
   validateForm() {
 
     if(this.address.name == '') 
-    this.errors = this.errors + "Por favor preencha o nome.<br><br>";
-
-    if(this.address.classe == '') 
-      this.errors = this.errors + "Por favor preencha a classe.<br><br>";
-
-    if(this.address.propertyType == '') 
-      this.errors = this.errors + "Por favor selecione o tipo de propriedade.<br><br>";
-
-    if(this.address.data == '') 
-      this.errors = this.errors + "Por favor preencha a data.<br><br>";
-
-    if(this.address.followUpStart == '') 
-      this.errors = this.errors + "Por favor preencha a data de início de acompanhamento.<br><br>";
-
-    if(this.address.followUpEnd == '') 
-      this.errors = this.errors + "Por favor preencha a data de término de acompanhamento.<br><br>";
+      this.errors = this.errors + 'Por favor preencha o nome.';
 
   }
 
-  async presentAlert() {
+  async alertSuccess() {
+
+    const saved = await this.alertController.create({
+      header: 'Parabéns!!',
+      message: 'Endereço salvo com sucesso.',
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+
+            // reset address data
+            this.resetAddressData();
+
+            // Redirect to home
+            this.goHome();
+          },
+        }
+      ],
+    });
+
+    await saved.present();
+
+  }
+
+  async presentAlert(message) {
     const alert = await this.alertController.create({
       // cssClass: 'my-custom-class',
       header: 'Atenção!!',
       // subHeader: 'Subtitle',
-      message: this.errors,
+      message: message,
       buttons: ['Fechar']
     });
     await alert.present();
+  }
+
+  resetAddressData() {
+    return this.address = {
+      id: null,
+      name: '',
+      data: '',
+      classe: '',
+      activityNiche: '',
+      propertyType: '',
+      description: '',
+      followUpStart: '',
+      followUpEnd: ''
+    };
   }
 
 }

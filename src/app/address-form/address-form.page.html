@@ -1,9 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="goHome()" color="light">
-        <ion-icon size="large" name="chevron-back-outline"></ion-icon>
-      </ion-button>    
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{ title }}
@@ -14,77 +12,77 @@
 <ion-content [fullscreen]="true">
 
   <div id="container">
-    
-    <ion-card class="card"> 
-      <ion-card-content>
-        <!-- Inputs with labels -->
-        <ion-item class="input-item">
-          <ion-label position="floating">Nome</ion-label>
-          <ion-input [(ngModel)]="address.name" name="name" 
-          
-          type="text" required></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label position="fixed">Data</ion-label>
-          <ion-input [(ngModel)]="address.data" 
-          name="data" type="date"></ion-input>
-        </ion-item>
-        <ion-item>
 
-          <ion-label position="fixed">Ramo de atividade</ion-label>
-          <ion-input [(ngModel)]="address.activityNiche" name="activityNiche" 
+    <ion-card class="card">
+      <ion-card-content>
+
+        <ion-item *ngIf="!loaded">
+          <h2>Carregando...</h2>
+        </ion-item>    
+
+        <ion-list *ngIf="loaded">
+          <!-- Inputs with labels -->
+          <ion-item class="input-item" >
+            <ion-label position="floating">Nome</ion-label>
+            <ion-input [(ngModel)]="address.name" name="name" type="text" required></ion-input>
+          </ion-item>
           
-          type="text" required></ion-input>
-         
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">Classe</ion-label>
-          <ion-input [(ngModel)]="address.classe" name="classe"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label position="fixed">Tipo de Imóvel</ion-label>
-          <ion-select [(ngModel)]="address.propertyType" name="propertyType" placeholder="Selecionar">
-            <ion-select-option value="1">1</ion-select-option>
-            <ion-select-option value="2">2</ion-select-option>
-          </ion-select>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Data</ion-label>
+            <ion-datetime displayFormat="DD/MM/YYYY" min="2000" max="2025" [(ngModel)]="address.data" name="data" type="date"></ion-datetime>
+          </ion-item>
+          <ion-item>
+
+            <ion-label position="floating">Ramo de atividade</ion-label>
+            <ion-input [(ngModel)]="address.activityNiche" name="activityNiche" type="text" required></ion-input>
+
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Classe</ion-label>
+            <ion-input [(ngModel)]="address.classe" name="classe"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Tipo de Imóvel</ion-label>
+            <ion-select [(ngModel)]="address.propertyType" name="propertyType" placeholder="Selecionar">
+              <ion-select-option value="">Selecionar</ion-select-option>
+              <ion-select-option *ngFor="let prop of properties | async" value="{{ prop.id }}">{{ prop.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="card"> 
+    <ion-card class="card">
       <ion-card-content>
         <ion-item>
           <ion-label position="floating">Descrição</ion-label>
-          <ion-textarea [(ngModel)]="address.description" 
-          name="description"></ion-textarea>
+          <ion-textarea [(ngModel)]="address.description" name="description"></ion-textarea>
         </ion-item>
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="card"> 
+    <ion-card class="card">
       <ion-card-content>
         <ion-item>
-          <ion-label position="fixed">DATA DE ACOMPANHAMENTO - INÍCIO</ion-label>
-          <ion-input [(ngModel)]="address.followUpStart" 
-          name="followUpStart" type="date"></ion-input>
+          <ion-label position="floating">DATA DE ACOMPANHAMENTO - INÍCIO</ion-label>
+          <ion-datetime displayFormat="DD/MM/YYYY" min="2000" max="2025" [(ngModel)]="address.followUpStart" name="followUpStart" type="date"></ion-datetime>
         </ion-item>
         <ion-item>
-          <ion-label position="fixed">DATA DE ACOMPANHAMENTO - TÉRMINO</ion-label>
-          <ion-input [(ngModel)]="address.followUpEnd" 
-          name="followUpEnd" type="date"></ion-input>
+          <ion-label position="floating">DATA DE ACOMPANHAMENTO - TÉRMINO</ion-label>
+          <ion-datetime displayFormat="DD/MM/YYYY" min="2000" max="2025" [(ngModel)]="address.followUpEnd" name="followUpEnd" type="date"></ion-datetime>
         </ion-item>
       </ion-card-content>
     </ion-card>
-  
+
   </div>
-  
+
 </ion-content>
 
-<ion-footer> 
+<ion-footer>
   <ion-toolbar id="footer" color="light">
-    <ion-button slot="start" color="danger" (click)="goHome()">Cancelar</ion-button>
+    <ion-back-button></ion-back-button>
     <ion-button *ngIf="!address.id" slot="end" (click)="addAddress()">Salvar</ion-button>
     <ion-button *ngIf="address.id" slot="end" color="success" (click)="updateAddress()">Atualizar</ion-button>
   </ion-toolbar>
-  
+
 </ion-footer>
