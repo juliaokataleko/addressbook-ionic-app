@@ -18,8 +18,8 @@ export class HomePage  implements OnInit {
 
       if (rdy) {
         // this.properties = this.db.getProps();
-        this.addresses = this.db.getAdds();
-        this.loaded = true;
+        // this.addresses = this.db.getAdds();
+        // this.loaded = true;
       }
 
     });
@@ -28,8 +28,18 @@ export class HomePage  implements OnInit {
   ngOnInit() {
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
+        // this.db.loadAddresses();
+        // this.addresses = this.db.getAdds();
+      }
+    });
+  }
+
+  ionViewWillEnter() {
+    this.db.getDatabaseState().subscribe(rdy => {
+      if (rdy) {
         this.db.loadAddresses();
-        this.addresses = this.db.getAdds();
+        this.addresses = this.db.addresses;
+        this.loaded = true;
       }
     });
   }
