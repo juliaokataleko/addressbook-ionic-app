@@ -93,7 +93,6 @@ export class DatabaseService {
     });
   }
 
-
   loadProperties() {
     return this.database.executeSql('SELECT * FROM properties', []).then(data => {
       
@@ -150,8 +149,7 @@ export class DatabaseService {
 
   updateAddress(data, id) {
     return this.database.executeSql(`UPDATE addresses SET name = ?, data = ?, activity_niche = ?, classe = ?, property_type = ?, description = ?, follow_up_start = ?, follow_up_end = ? WHERE id = ${id}`, data).then(data => {
-      // this.loadProducts();
-      // console.log(data);
+      
     });
   }
 

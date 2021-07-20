@@ -14,24 +14,10 @@ export class HomePage  implements OnInit {
   loaded = false;
 
   constructor(private db: DatabaseService) {
-    this.db.getDatabaseState().subscribe(rdy => {
 
-      if (rdy) {
-        // this.properties = this.db.getProps();
-        // this.addresses = this.db.getAdds();
-        // this.loaded = true;
-      }
-
-    });
   }
 
   ngOnInit() {
-    this.db.getDatabaseState().subscribe(rdy => {
-      if (rdy) {
-        // this.db.loadAddresses();
-        // this.addresses = this.db.getAdds();
-      }
-    });
   }
 
   ionViewWillEnter() {
