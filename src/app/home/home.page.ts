@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Address } from '../interfaces/Address';
+import { Address } from '../models/Address';
 import { DatabaseService } from '../services/database/database.service';
 
 @Component({

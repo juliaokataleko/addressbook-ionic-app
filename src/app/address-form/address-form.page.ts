@@ -4,7 +4,8 @@ import { AlertController, NavParams } from '@ionic/angular';
 
 import { Observable } from 'rxjs';
 import { DatabaseService } from '../services/database/database.service';
-import { Address } from '../interfaces/Address';
+import { Address } from '../models/Address';
+
 @Component({
   selector: 'app-address-form',
   templateUrl: './address-form.page.html',

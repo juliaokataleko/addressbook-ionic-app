@@ -4,7 +4,7 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
 import { HttpClient } from '@angular/common/http';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Address } from 'src/app/interfaces/Address';
+import { Address } from 'src/app/models/Address';
 
 @Injectable({
   providedIn: 'root'
